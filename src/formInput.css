@@ -1,0 +1,49 @@
+.patient-form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 50vh; */
+  margin-top: 0%;
+
+}
+input{
+  padding: 15px;
+  margin: 10px 0px !important;
+  border-radius:5px;
+  border: 1px solid gray;
+}
+select{
+  padding: 15px;
+  margin: 10px 0px !important
+}
+button{
+  width:100%;
+  height: 50px;
+  padding: 10px;
+  background-color: purple;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 15px 10px;
+
+}
+.formInput{
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+
+}
+span{
+  font-size: 12px;
+  padding: 3px;
+  color: red;
+  display:none
+}
+input:invalid[focused=true] ~span{
+  display: block;
+}
+input:invalid[focused=true]{
+  border:1px solid red
+}
