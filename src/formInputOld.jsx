@@ -28,17 +28,9 @@ const FormInput=(props)=>{
         body: JSON.stringify({ provinceId: selectedState }),
       });
       const data = await response.json();
-      const districtOptions = data.map((district) => ({
-        value: district.id,
-        label: district.name,
-      }));
-      // Update the district options in the inputs array
-      const updatedInputs = [...inputProps];
-      const districtInput = updatedInputs.find(
-        (input) => input.name === "district_id"
-      );
-      districtInput.options = districtOptions;
-     
+      console.log(data);
+      districtOptions.push(data);
+      console.log(options);
     } catch (error) {
       console.error('Error fetching district options:', error);
     }
@@ -79,11 +71,19 @@ const FormInput=(props)=>{
             }
           }}{...inputProps} onBlur={handleFocus} focused={focused.toString()}>
             
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+        { id =='6'?options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          )):id=='7'?districtOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          )):options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
         <span>{errorMessage}</span>
       </div>
