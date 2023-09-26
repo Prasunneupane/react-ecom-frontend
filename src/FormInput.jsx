@@ -11,7 +11,7 @@ const FormInput=(props)=>{
   }
 
   const handleStateChange = async (e) => {
-    const selectedState = e.target.value;
+    const selectedDistrict = e.target.value;
     
     
     setSelectedDistrict(""); // Reset district when state changes
@@ -19,26 +19,18 @@ const FormInput=(props)=>{
 
     // Fetch and set district options based on the selected state
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/getDistrictByProvinceId',{
+      const response = await fetch('http://127.0.0.1:8000/api/getVdcByDistrictId',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify({ provinceId: selectedState }),
+        body: JSON.stringify({ districtId: selectedDistrict }),
       });
       const data = await response.json();
-      const districtOptions = data.map((district) => ({
-        value: district.id,
-        label: district.name,
-      }));
-      // Update the district options in the inputs array
-      const updatedInputs = [...inputProps];
-      const districtInput = updatedInputs.find(
-        (input) => input.name === "district_id"
-      );
-      districtInput.options = districtOptions;
-     
+      // console.log(data);
+      districtOptions.push(data);
+      // console.log(options);
     } catch (error) {
       console.error('Error fetching district options:', error);
     }
@@ -46,7 +38,7 @@ const FormInput=(props)=>{
 
   const handleDistrictChange = async (e) => {
     const selectedDistrict = e.target.value;
-    console.log(selectedDistrict);
+    // console.log(selectedDistrict);
     setSelectedDistrict(selectedDistrict);
     setSelectedVdc(""); // Reset VDC when district changes
 
@@ -67,23 +59,13 @@ const FormInput=(props)=>{
     return(
       <div className="formInput">
         <label >{label}</label>
-        <select id={id} onChange={(e) => {
-            onChange(e);
-            console.log(e.target)
-            if (e.target.name === 'state_id') {
-              handleStateChange(e);
-            } else if (e.target.name=== 'district_id') {
-              handleDistrictChange(e);
-            } else if (e.target.name === 'vdc_id') {
-              handleVdcChange(e);
-            }
-          }}{...inputProps} onBlur={handleFocus} focused={focused.toString()}>
+        <select onChange={onChange} id={id} {...inputProps} onBlur={handleFocus} focused={focused.toString()}>
             
-            {options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+        { options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
         <span>{errorMessage}</span>
       </div>

@@ -20,6 +20,57 @@ function UpdateProduct(){
   // console.log(values);
 
   const [stateOptions, setStateOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [vdcOptions, setVdcOptions] = useState([]);
+
+  async function fetchVdcOptions(e){
+    console.log(e.target);
+    const selectedDistrict = e.target.value;
+    try{
+      const response = await fetch('http://127.0.0.1:8000/api/getVdcByDistrictId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+         body: JSON.stringify({ districtId: selectedDistrict }),
+      });
+      const data = await response.json();
+      return data;
+    }catch (error){
+      console.log("Error Fetching District Data:",error);
+    }
+  }
+
+  async function fetchDistrictOptions(e){
+    const selectedState = e.target.value;
+    try{
+      const response = await fetch('http://127.0.0.1:8000/api/getDistrictByProvinceId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+         body: JSON.stringify({ provinceId: selectedState }),
+      });
+      const data = await response.json();
+      return data;
+    }catch (error){
+      console.log("Error Fetching District Data:",error);
+    }
+  }
+
+  async function populateVdcOptions(e){
+    const options = await fetchVdcOptions(e);
+    setVdcOptions(options)
+  }
+
+
+    async function populateDistrictOptions(e){
+      const options = await fetchDistrictOptions(e);
+      setDistrictOptions(options)
+    }
+    
 
   async function fetchStateOptions() {
     try {
@@ -45,6 +96,7 @@ function UpdateProduct(){
     }
 
     populateStateOptions();
+    
   }, []);
   
   // Call the function to populate the state options within the inputs array
@@ -126,8 +178,10 @@ function UpdateProduct(){
       label: "District",
       errorMessage:"Please Select District",
       required:true,
-      options: [
-      ],
+      options: districtOptions.map(district => ({
+        value: district.id,
+        label: district.district_name,
+      }))
     },
     {
       id: 8,
@@ -137,8 +191,10 @@ function UpdateProduct(){
 
       errorMessage:"Please Select VDC/Municipality",
       required:true,
-      options: [
-      ],
+      options: vdcOptions.map(vdc => ({
+        value: vdc.id,
+        label: vdc.municipal_name,
+      }))
     },
 
   ]
@@ -154,6 +210,19 @@ function UpdateProduct(){
 
   const onChange= (e)=>{
     setValues({...values,[e.target.name]: e.target.value});
+    console.log(e.target.name);
+    if(e.target.name=="state_id"){
+      console.log("hola")
+      fetchDistrictOptions(e)
+      populateDistrictOptions(e)
+    }
+    if(e.target.name=="district_id"){
+      console.log("hola")
+      fetchVdcOptions(e)
+      console.log(e.target.value)
+      populateVdcOptions(e)
+    }
+    
   }
   return (
     <div >

@@ -2,11 +2,13 @@ import { useState } from "react";
 import "./formInput.css"
 const FormInput=(props)=>{
   const {label,onChange, id, type,errorMessage, options,...inputProps}=props;
+  let selectOptions = options;
   const [focused,setFocused]= useState(false);
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVDC, setSelectedVDC] = useState("");
-
+  const [selectedAddressId, selectedAddressIdState] = useState("state_id");
+ 
 
 
   useEffect(() => {
