@@ -24,8 +24,8 @@ function UpdateProduct(){
   const [vdcOptions, setVdcOptions] = useState([]);
 
   async function fetchVdcOptions(e){
-    console.log(e.target);
-    const selectedDistrict = e.target.value;
+   // console.log(e.target);
+    const selectedDistrict = e
     try{
       const response = await fetch('http://127.0.0.1:8000/api/getVdcByDistrictId', {
         method: 'POST',
@@ -43,7 +43,7 @@ function UpdateProduct(){
   }
 
   async function fetchDistrictOptions(e){
-    const selectedState = e.target.value;
+    const selectedState = e
     try{
       const response = await fetch('http://127.0.0.1:8000/api/getDistrictByProvinceId', {
         method: 'POST',
@@ -69,6 +69,9 @@ function UpdateProduct(){
     async function populateDistrictOptions(e){
       const options = await fetchDistrictOptions(e);
       setDistrictOptions(options)
+      if(options.length > 0){
+        const vdcPopulate = await populateVdcOptions(options[0].id)
+      }
     }
     
 
@@ -93,9 +96,22 @@ function UpdateProduct(){
     async function populateStateOptions() {
       const options = await fetchStateOptions();
       setStateOptions(options);
-    }
+      if (options.length > 0) {
+        const firstStateId = options[0].id;
 
+        const districtOptions = await populateDistrictOptions(firstStateId);
+        if (districtOptions.length > 0) {
+          const firstDistrictId = districtOptions[0].id;
+          const vdcOptions = await populateVdcOptions(firstDistrictId);
+          
+        }
+      }
+    }
+    
+   
     populateStateOptions();
+    // fetchDistrictOptions(firstStateId);
+    // fetchVdcOptions(firstDistrictId);
     
   }, []);
   
@@ -210,17 +226,17 @@ function UpdateProduct(){
 
   const onChange= (e)=>{
     setValues({...values,[e.target.name]: e.target.value});
-    console.log(e.target.name);
+    console.log(e.target.value);
     if(e.target.name=="state_id"){
       console.log("hola")
-      fetchDistrictOptions(e)
-      populateDistrictOptions(e)
+      fetchDistrictOptions(e.target.value)
+      populateDistrictOptions(e.target.value)
     }
     if(e.target.name=="district_id"){
       console.log("hola")
-      fetchVdcOptions(e)
+      fetchVdcOptions(e.target.value)
       console.log(e.target.value)
-      populateVdcOptions(e)
+      populateVdcOptions(e.target.value)
     }
     
   }
